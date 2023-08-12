@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: ${db_url}
+    username: ${db_username}
+    password: ${db_password}
+  jpa:
+    properties:
+      dialect:
+        hibernate: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+app:
+  jwtSecret: d178899b7beeb99ec2ebdad4636c7e21a2364494414013f78dd5a00725b77f14
+  jwtExpiration: 604800000
