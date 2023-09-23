@@ -1,85 +1,89 @@
-import { Formik } from "formik";
-import React, { useState } from "react";
-import { TextInput } from "react-native";
-import useAuth from "../hooks/useAuth";
 import { loginValidationSchema } from "../utils/FormValidation";
 
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const { onLogin } = useAuth();
-
-//   const login = async () => {
-//     const result = await onLogin(email, password);
-//     if (result && result.error) {
-//       alert(result.msg);
-//     }
-//   };
-
-//   return (
-//     <View>
-//       <TextInput
-//         placeholder="Email"
-//         onChangeText={(text) => setEmail(text)}
-//         autoCapitalize="none"
-//       />
-//       <TextInput
-//         placeholder="Password"
-//         secureTextEntry={true}
-//         onChangeText={(text) => setPassword(text)}
-//       />
-//       <Button onPress={login} title="Login" />
-//     </View>
-//   );
-// };
+import { Formik } from "formik";
+import { useState } from "react";
+import { Image, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CustomButton from "../components/CustomButton";
+import CustomText from "../components/CustomText";
+import CustomTextInput from "../components/CustomTextInput";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
-  const { setAuth, loginUser } = useAuth();
+  const { loginUser } = useAuth();
   const [error, setError] = useState("");
 
   const handleSubmit = async (user) => {
-    console.log(user);
     try {
-      const data = await loginUser(user);
-      setStatusBarHidden(data);
+      await loginUser(user);
     } catch (error) {
       if (!error?.response) {
-        setError("No Server response");
-      } else if (error.response?.status == 404) {
+        setError("No Server Response");
+      } else if (error.response?.status === 404) {
         setError("Wrong email or password");
       } else {
         setError("Login Failed");
       }
+      alert(error);
     }
   };
 
   return (
-    <Formik
-      initialValues={{ email: "", password: "" }}
-      validationSchema={loginValidationSchema}
+    <SafeAreaView
+      className="flex-1 items-center justify-center bg-white"
+      style={{ fontFamily: "mrt-mid" }}
     >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
-        <>
-          <TextInput
-            placeholder="john@doe.com"
-            keyboardType="email-address"
-            name="email"
-            onChangeText={handleChange("email")}
-            onBlur={handleBlur("email")}
-            value={values.email}
-          />
-          <TextInput
-            placeholder="********"
-            secureTextEntry
-            name="password"
-            onChangeText={handleChange("password")}
-            onBlur={handleBlur("password")}
-            value={values.password}
-          />
-          <Button onPress={handleSubmit} title="LOGIN" />
-        </>
-      )}
-    </Formik>
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={loginValidationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isValid,
+        }) => (
+          <>
+            <Image
+              source={require("../../assets/images/UNI-logo.png")}
+              style={{ width: 250, height: 250 }}
+            />
+            <CustomText>Email</CustomText>
+            <CustomTextInput
+              placeholder="john@doe.com"
+              keyboardType="email-address"
+              name="email"
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              value={values.email}
+            />
+            {errors.email && touched.email && <Text>{errors.email}</Text>}
+            <CustomText>Password</CustomText>
+            <CustomTextInput
+              placeholder="********"
+              secureTextEntry
+              name="password"
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+            />
+            {errors.password && touched.password && (
+              <CustomText>{errors.password}</CustomText>
+            )}
+            <CustomText>{error}</CustomText>
+            <CustomButton
+              onPress={handleSubmit}
+              title="LOGIN"
+              disabled={!isValid}
+            />
+          </>
+        )}
+      </Formik>
+    </SafeAreaView>
   );
 };
 

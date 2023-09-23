@@ -1,17 +1,20 @@
 import * as SecureStore from "expo-secure-store";
 
-export const setInStore = async (user, token) => {
-  await SecureStore.setItemAsync("token", token);
-  await SecureStore.setItemAsync("user", user);
+export const setInStore = async (data) => {
+  await SecureStore.setItemAsync(
+    "accessToken",
+    JSON.stringify(data.accessToken)
+  );
+  await SecureStore.setItemAsync("user", JSON.stringify(data.user));
 };
 
 export const removeFromStore = async () => {
-  await SecureStore.removeFromStore("token");
-  await SecureStore.removeFromStore("user");
+  await SecureStore.deleteItemAsync("accessToken");
+  await SecureStore.deleteItemAsync("user");
 };
 
 export const getTokenFromStore = async () => {
-  await SecureStore.getItemAsync("token");
+  await SecureStore.getItemAsync("accessToken");
 };
 
 export const getUserFromStore = async () => {
@@ -19,7 +22,7 @@ export const getUserFromStore = async () => {
 };
 
 export const isTokenAvailableInStore = async () => {
-  await SecureStore.isAvailableAsync("token");
+  await SecureStore.isAvailableAsync("accessToken");
 };
 
 export const isUserAvailableInStore = async () => {
