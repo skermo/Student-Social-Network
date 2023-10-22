@@ -14,6 +14,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [isLoaded] = useFonts({
+    "mrt-light": require("./assets/fonts/Montserrat-Light.ttf"),
     "mrt-mid": require("./assets/fonts/Montserrat-Medium.ttf"),
     "mrt-bold": require("./assets/fonts/Montserrat-Bold.ttf"),
     "mrt-xbold": require("./assets/fonts/Montserrat-ExtraBold.ttf"),
@@ -35,7 +36,7 @@ export default function App() {
         onLayout={handleOnLayout}
         style={{
           flex: 1,
-          fontFamily: "mrt-mid",
+          fontFamily: "mrt-light",
           fontSize: 45,
         }}
       >

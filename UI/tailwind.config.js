@@ -6,7 +6,20 @@ module.exports = {
     "./app/**/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        raisin: {
+          500: "#252131",
+          600: "#17151F",
+        },
+        barn: {
+          500: "#780000",
+        }
+      },
+      borderWidth: {
+        light: "0.3px"
+      }
+    },
   },
   plugins: [],
 };

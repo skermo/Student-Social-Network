@@ -2,7 +2,11 @@ import { loginValidationSchema } from "../utils/FormValidation";
 
 import { Formik } from "formik";
 import { useState } from "react";
-import { Image, Text } from "react-native";
+import {
+  Image,
+  StatusBar,
+  View
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/CustomButton";
 import CustomText from "../components/CustomText";
@@ -24,15 +28,15 @@ const Login = () => {
       } else {
         setError("Login Failed");
       }
-      alert(error);
     }
   };
 
   return (
     <SafeAreaView
-      className="flex-1 items-center justify-center bg-white"
+      className="flex-1 items-center justify-center bg-raisin-500"
       style={{ fontFamily: "mrt-mid" }}
     >
+      <StatusBar barStyle="light-content" />
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={loginValidationSchema}
@@ -50,36 +54,52 @@ const Login = () => {
           <>
             <Image
               source={require("../../assets/images/UNI-logo.png")}
-              style={{ width: 250, height: 250 }}
+              style={{ tintColor: "#FFFFFF" }}
+              className="h-36 w-4/6 p-0 m-0"
             />
-            <CustomText>Email</CustomText>
-            <CustomTextInput
-              placeholder="john@doe.com"
-              keyboardType="email-address"
-              name="email"
-              onChangeText={handleChange("email")}
-              onBlur={handleBlur("email")}
-              value={values.email}
-            />
-            {errors.email && touched.email && <Text>{errors.email}</Text>}
-            <CustomText>Password</CustomText>
-            <CustomTextInput
-              placeholder="********"
-              secureTextEntry
-              name="password"
-              onChangeText={handleChange("password")}
-              onBlur={handleBlur("password")}
-              value={values.password}
-            />
-            {errors.password && touched.password && (
-              <CustomText>{errors.password}</CustomText>
-            )}
-            <CustomText>{error}</CustomText>
-            <CustomButton
-              onPress={handleSubmit}
-              title="LOGIN"
-              disabled={!isValid}
-            />
+            <CustomText classes="uppercase text-slate-50 mb-10 shadow-2xl">
+              Universities United
+            </CustomText>
+            <View className="w-10/12 border px-4 py-8 rounded-2xl bg-raisin-600 border-raisin-600 shadow-2xl">
+              <CustomText classes="text-slate-50 font-black">Email</CustomText>
+              <CustomTextInput
+                placeholder="johndoe@mail.com"
+                keyboardType="email-address"
+                name="email"
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+                value={values.email}
+                classes="border-slate-50 border border-light text-slate-50"
+              />
+              {errors.email && touched.email && (
+                <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">
+                  {errors.email}
+                </CustomText>
+              )}
+              <CustomText classes="text-slate-50">Password</CustomText>
+              <CustomTextInput
+                placeholder="********"
+                secureTextEntry
+                name="password"
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+                value={values.password}
+                classes="border-slate-50 border border-light text-slate-50"
+              />
+              {errors.password && touched.password && (
+                <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">
+                  {errors.password}
+                </CustomText>
+              )}
+             <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">{error}</CustomText>
+              <CustomButton
+                onPress={handleSubmit}
+                title="Login"
+                disabled={!isValid}
+                classes="border-light border-raisin-500 bg-raisin-500"
+                textClasses="text-slate-50"
+              />
+            </View>
           </>
         )}
       </Formik>

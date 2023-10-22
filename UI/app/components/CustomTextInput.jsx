@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React from "react";
 import { TextInput } from "react-native";
 
@@ -8,6 +9,7 @@ const CustomTextInput = ({
   onChangeText,
   onBlur,
   value,
+  classes,
 }) => {
   return (
     <TextInput
@@ -17,7 +19,8 @@ const CustomTextInput = ({
       onChangeText={onChangeText}
       onBlur={onBlur}
       value={value}
-      className="rounded-full bg-red-200 p-2"
+      placeholderTextColor="#f7fafc33"
+      className={classNames("rounded-2xl p-3 mt-2 mb-3", classes)}
     />
   );
 };
