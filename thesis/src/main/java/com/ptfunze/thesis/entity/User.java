@@ -51,6 +51,10 @@ public class User {
     @JoinColumn(name = "college_id")
     private College college;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id")
+    private University university;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_role",
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),

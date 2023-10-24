@@ -17,8 +17,8 @@ import java.util.UUID;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "colleges")
-public class College {
+@Table(name = "universities")
+public class University {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -48,10 +48,9 @@ public class College {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> users;
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<College> colleges;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university_id")
-    private University university;
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> users;
 }

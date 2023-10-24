@@ -1,9 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button } from "react-native";
+import Tabs from "../components/Tabs";
 import useAuth from "../hooks/useAuth";
-import Home from "../pages/Home";
 import Login from "../pages/Login";
+import NewPost from "../pages/NewPost";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,15 +20,16 @@ const Layout = () => {
       >
         {auth?.authenticated ? (
           <Stack.Screen
-            name="Home"
-            component={Home}
+            name="Tabs"
+            component={Tabs}
             options={{
-              headerRight: () => <Button onPress={logoutUser} title="Logout" />,
+              headerRight: () => <Button onPress={logoutUser} title="Logout" />
             }}
           ></Stack.Screen>
         ) : (
           <Stack.Screen name="Login" component={Login}></Stack.Screen>
         )}
+        <Stack.Screen name="NewPost" component={NewPost} options={{headerShown: true, headerTitle: "Novi Post"}}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

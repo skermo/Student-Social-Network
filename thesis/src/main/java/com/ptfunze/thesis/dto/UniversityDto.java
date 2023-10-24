@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CollegeDto {
+public class UniversityDto {
     private UUID id;
     private String fullName;
     private String abbreviation;

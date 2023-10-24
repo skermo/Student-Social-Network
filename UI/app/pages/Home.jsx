@@ -1,13 +1,22 @@
 import React from "react";
-import { View } from "react-native";
+import { Button, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomText from "../components/CustomText";
+import CustomButton from "../components/CustomButton";
+import useAuth from "../hooks/useAuth";
 
-const Home = () => {
+const Home = ({ navigation }) => {
+  const { logoutUser } = useAuth();
   return (
     <SafeAreaView>
       <View>
-        <CustomText>Home</CustomText>
+        <Text>Home</Text>
+        <CustomButton
+          title="New Post"
+          onPress={() => {
+            navigation.navigate("NewPost");
+          }}
+        />
+        <Button onPress={logoutUser} title="Logout" />
       </View>
     </SafeAreaView>
   );
