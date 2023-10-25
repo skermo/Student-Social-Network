@@ -14,6 +14,9 @@ module.exports = {
         },
         barn: {
           500: "#780000",
+        },
+        crimson: {
+          500: "#D31336"
         }
       },
       borderWidth: {

@@ -10,6 +10,9 @@ const CustomTextInput = ({
   onBlur,
   value,
   classes,
+  multiline = false,
+  numberOfLines = 1,
+  placeholderTextColor
 }) => {
   return (
     <TextInput
@@ -19,7 +22,9 @@ const CustomTextInput = ({
       onChangeText={onChangeText}
       onBlur={onBlur}
       value={value}
-      placeholderTextColor="#f7fafc33"
+      multiline={multiline}
+      numberOfLines={numberOfLines}
+      placeholderTextColor={placeholderTextColor}
       className={classNames("rounded-2xl p-3 mt-2 mb-3", classes)}
     />
   );

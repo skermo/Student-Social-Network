@@ -70,6 +70,7 @@ const Login = () => {
                 onBlur={handleBlur("email")}
                 value={values.email}
                 classes="border-slate-50 border border-light text-slate-50"
+                placeholderTextColor="#f7fafc33"
               />
               {errors.email && touched.email && (
                 <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">
@@ -85,6 +86,7 @@ const Login = () => {
                 onBlur={handleBlur("password")}
                 value={values.password}
                 classes="border-slate-50 border border-light text-slate-50"
+                placeholderTextColor="#f7fafc33"
               />
               {errors.password && touched.password && (
                 <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">
