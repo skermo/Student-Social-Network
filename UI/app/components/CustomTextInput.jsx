@@ -12,7 +12,8 @@ const CustomTextInput = ({
   classes,
   multiline = false,
   numberOfLines = 1,
-  placeholderTextColor
+  placeholderTextColor,
+  keyboardType
 }) => {
   return (
     <TextInput
@@ -25,6 +26,8 @@ const CustomTextInput = ({
       multiline={multiline}
       numberOfLines={numberOfLines}
       placeholderTextColor={placeholderTextColor}
+      keyboardType={keyboardType}
+      blurOnSubmit={true}
       className={classNames("rounded-2xl p-3 mt-2 mb-3", classes)}
     />
   );

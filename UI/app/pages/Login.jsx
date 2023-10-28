@@ -1,5 +1,6 @@
 import { loginValidationSchema } from "../utils/FormValidation";
 
+import classNames from "classnames";
 import { Formik } from "formik";
 import { useState } from "react";
 import {
@@ -22,11 +23,11 @@ const Login = () => {
       await loginUser(user);
     } catch (error) {
       if (!error?.response) {
-        setError("No Server Response");
+        setError("Nema odgovora servera");
       } else if (error.response?.status === 404) {
-        setError("Wrong email or password");
+        setError("Pogreašan email ili password");
       } else {
-        setError("Login Failed");
+        setError("Neuspješan login");
       }
     }
   };
@@ -98,7 +99,7 @@ const Login = () => {
                 onPress={handleSubmit}
                 title="Login"
                 disabled={!isValid}
-                classes="border-light border-raisin-500 bg-raisin-500"
+                classes={classNames("border-light border-raisin-500 bg-raisin-500 disabled:opacity-75", {"opacity-70": !isValid} )}
                 textClasses="text-slate-50"
               />
             </View>

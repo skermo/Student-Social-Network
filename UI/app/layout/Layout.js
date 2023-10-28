@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button } from "react-native";
+import { crimson, raisin } from "../../assets/styles/variables";
 import Tabs from "../components/Tabs";
 import useAuth from "../hooks/useAuth";
 import Login from "../pages/Login";
@@ -23,13 +24,23 @@ const Layout = () => {
             name="Tabs"
             component={Tabs}
             options={{
-              headerRight: () => <Button onPress={logoutUser} title="Logout" />
+              headerRight: () => <Button onPress={logoutUser} title="Logout" />,
             }}
           ></Stack.Screen>
         ) : (
           <Stack.Screen name="Login" component={Login}></Stack.Screen>
         )}
-        <Stack.Screen name="NewPost" component={NewPost} options={{headerShown: true, headerTitle: "Novi Post"}}></Stack.Screen>
+        <Stack.Screen
+          name="NewPost"
+          component={NewPost}
+          options={{
+            headerShown: true,
+            headerTitle: "Novi Post",
+            headerStyle: { backgroundColor: raisin },
+            headerTitleStyle: {color: 'white'},
+            headerTintColor: crimson
+          }}
+        ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
