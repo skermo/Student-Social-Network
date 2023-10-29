@@ -20,5 +20,7 @@ public class PostDto {
     private ZonedDateTime updatedOn;
     private UUID categoryId;
     private UUID userId;
+    private UUID collegeId;
+    private UUID universityId;
     private boolean isPrivate;
 }

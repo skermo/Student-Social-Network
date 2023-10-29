@@ -19,7 +19,7 @@ const Layout = () => {
           headerShadowVisible: false,
         }}
       >
-        {auth?.authenticated ? (
+        {auth?.user ? (
           <Stack.Screen
             name="Tabs"
             component={Tabs}

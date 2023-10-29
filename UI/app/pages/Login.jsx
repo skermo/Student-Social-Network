@@ -35,7 +35,7 @@ const Login = () => {
   return (
     <SafeAreaView
       className="flex-1 items-center justify-center bg-raisin-500"
-      style={{ fontFamily: "mrt-mid" }}
+      style={{ fontFamily: "normal" }}
     >
       <StatusBar barStyle="light-content" />
       <Formik

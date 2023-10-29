@@ -16,11 +16,11 @@ module.exports = {
           500: "#780000",
         },
         crimson: {
-          500: "#D31336"
-        }
+          500: "#D31336",
+        },
       },
       borderWidth: {
-        light: "0.3px"
+        light: "0.3px",
       }
     },
   },

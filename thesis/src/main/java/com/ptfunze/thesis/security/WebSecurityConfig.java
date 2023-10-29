@@ -48,8 +48,8 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll()
+                        authorize.requestMatchers("/api/auth/login").permitAll()
+                                .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
 
                 ).exceptionHandling(exception -> exception

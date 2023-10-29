@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -26,5 +27,10 @@ public class CollegeController {
     @GetMapping
     public ResponseEntity<List<CollegeDto>> getAllCollages() {
         return new ResponseEntity<>(collegeService.getAllColleges(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public CollegeDto getCollegeById(@PathVariable(name = "id") UUID id){
+        return collegeService.getCollegeById(id);
     }
 }

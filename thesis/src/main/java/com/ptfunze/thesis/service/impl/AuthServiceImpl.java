@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Service
@@ -95,6 +96,13 @@ public class AuthServiceImpl implements AuthService {
             token = request.substring(7);
         }
         tokenProvider.invalidateToken(token);
+    }
+
+    @Override
+    public UserDto getUserById(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        return mapToDto(user);
     }
 
     private UserDto mapToDto(User user) {

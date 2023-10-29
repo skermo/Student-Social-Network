@@ -10,41 +10,36 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     user: null,
     accessToken: null,
-    authenticated: false,
   });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const load = async () => {
       const accessToken = await SecureStore.getItemAsync("accessToken");
       const user = await SecureStore.getItemAsync("user");
       if (accessToken && user) {
         axios.defaults.headers.common[
           "Authorization"
-        ] = `Bearer ${accessToken}`;
-
+        ] = `Bearer ${accessToken.replace(/^"(.*)"$/, "$1")}`;
         setAuth({
-          user: user,
+          user: JSON.parse(user),
           accessToken: accessToken,
-          authenticated: true,
         });
       }
     };
     load();
+    setLoading(false);
   }, []);
 
   const loginUser = async (user) => {
     setLoading(true);
     const data = await login(user);
     setInStore(data);
-    setAuth({
-      user: data.user,
-      accessToken: data.accessToken,
-      authenticated: true,
-    });
+    setAuth(data);
     axios.defaults.headers.common[
       "Authorization"
-    ] = `Bearer ${data.accessToken}`;
+    ] = `Bearer ${data.accessToken.replace(/^"(.*)"$/, "$1")}`;
     setLoading(false);
   };
 
@@ -55,7 +50,6 @@ export const AuthProvider = ({ children }) => {
     setAuth({
       user: null,
       accessToken: null,
-      authenticated: false,
     });
   };
 

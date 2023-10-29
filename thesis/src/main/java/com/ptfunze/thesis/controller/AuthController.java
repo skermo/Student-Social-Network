@@ -1,5 +1,6 @@
 package com.ptfunze.thesis.controller;
 
+import com.ptfunze.thesis.dto.UserDto;
 import com.ptfunze.thesis.request.LoginRequest;
 import com.ptfunze.thesis.request.RegisterRequest;
 import com.ptfunze.thesis.response.JwtAuthResponse;
@@ -7,6 +8,8 @@ import com.ptfunze.thesis.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,5 +36,10 @@ public class AuthController {
     @GetMapping("/logout")
     public void logout(@RequestHeader(name = "Authorization") String request) {
         authService.logout(request);
+    }
+
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable(name = "id") UUID id){
+        return authService.getUserById(id);
     }
 }

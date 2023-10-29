@@ -24,4 +24,5 @@ public class UserDto {
     private String lastName;
     private Set<RoleDto> roles;
     private UUID collegeId;
+    private String imageUrl;
 }

@@ -3,6 +3,7 @@ package com.ptfunze.thesis.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -37,6 +38,11 @@ public class User {
     @NotNull
     @Column(name = "last_name")
     private String lastName;
+
+    @Size(min = 2, message = "Image url must contain at least 2 characters")
+    @Size(max = 255, message = "Image url cannot contain more than 255 characters")
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;

@@ -1,9 +1,13 @@
 package com.ptfunze.thesis.service;
 
 import com.ptfunze.thesis.dto.PostDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PostService {
-    List<PostDto> getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir);
+    Page<PostDto> getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir);
+    PostDto createPost(PostDto postDto);
+    PostDto getPostById(UUID id);
 }
