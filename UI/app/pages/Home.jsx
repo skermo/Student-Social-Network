@@ -31,7 +31,7 @@ const Home = ({ navigation }) => {
             Zdravo, {auth.user.firstName}!
           </CustomText>
         </View>
-        <View className="flex align-center justify-center mx-5">
+        <View className="flex align-center justify-center mx-4">
           {posts &&
             posts.length > 0 &&
             posts.map((value, key) => <GridItem post={value} key={value.id} />)}

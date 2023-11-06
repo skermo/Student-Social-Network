@@ -41,3 +41,7 @@ export const formatGoogleDriveImageSrc = (imageUrl) => {
 export const formatCollegeName = (college) => {
   return college.fullName + ", " + college.city;
 };
+
+export const truncateText = (text, length) => {
+  return text.substring(0, length) + "...";
+};
