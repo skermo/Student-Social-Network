@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -23,4 +24,6 @@ public class PostDto {
     private UUID collegeId;
     private UUID universityId;
     private boolean isPrivate;
+    private List<LikeDto> likes;
+    private List<CommentDto> comments;
 }

@@ -10,4 +10,5 @@ public interface PostService {
     Page<PostDto> getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir);
     PostDto createPost(PostDto postDto);
     PostDto getPostById(UUID id);
+    void likePost(UUID id);
 }

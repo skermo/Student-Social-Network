@@ -15,3 +15,11 @@ export const getPosts = async (pageNo = 0) => {
     ) || []
   );
 };
+
+export const likePost = (likeRequest) => {
+  return ApiRequest()
+    .post(`posts/like`, likeRequest)
+    .then((response) => {
+      return response.data;
+    });
+};

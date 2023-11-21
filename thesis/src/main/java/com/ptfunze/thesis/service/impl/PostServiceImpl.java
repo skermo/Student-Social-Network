@@ -1,13 +1,18 @@
 package com.ptfunze.thesis.service.impl;
 
+import com.ptfunze.thesis.dto.LikeDto;
 import com.ptfunze.thesis.dto.PostDto;
+import com.ptfunze.thesis.entity.Like;
 import com.ptfunze.thesis.entity.Post;
 import com.ptfunze.thesis.entity.User;
 import com.ptfunze.thesis.exception.NotFoundException;
 import com.ptfunze.thesis.exception.UnauthorizedException;
+import com.ptfunze.thesis.repository.LikeRepository;
 import com.ptfunze.thesis.repository.PostRepository;
 import com.ptfunze.thesis.repository.UserRepository;
+import com.ptfunze.thesis.service.LikeService;
 import com.ptfunze.thesis.service.PostService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +27,15 @@ import java.util.UUID;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
+    private final LikeServiceImpl likeService;
     private final ModelMapper mapper;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, ModelMapper mapper) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, LikeServiceImpl likeService, ModelMapper mapper) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
+        this.likeService = likeService;
         this.mapper = mapper;
     }
 
@@ -57,7 +66,24 @@ public class PostServiceImpl implements PostService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Post not found"));
         if (isAllowedToAccessPost(user, post)) return mapToDto(post);
-        else throw new UnauthorizedException("User not allowed to acces post");
+        else throw new UnauthorizedException("User not allowed to access post");
+    }
+
+    @Transactional
+    @Override
+    public void likePost(UUID id) {
+        postRepository.findById(id).orElseThrow(() -> new NotFoundException("Post not found"));
+        LikeDto likeDto = LikeDto.builder()
+                .postId(id)
+                .userId(getAuthUser().getId())
+                .build();
+
+        System.out.println(likeRepository.existsByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId()));
+
+        if (likeRepository.existsByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId())) {
+            Like like = likeRepository.findByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId());
+            likeRepository.delete(like.getId());
+        } else likeRepository.save(likeService.mapToEntity(likeDto));
     }
 
     private PostDto mapToDto(Post post) {

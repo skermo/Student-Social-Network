@@ -1,6 +1,7 @@
 package com.ptfunze.thesis.controller;
 
 import com.ptfunze.thesis.dto.PostDto;
+import com.ptfunze.thesis.request.LikeRequest;
 import com.ptfunze.thesis.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -37,5 +38,10 @@ public class PostController {
     @GetMapping("/{id}")
     public PostDto getPostById(@PathVariable(name = "id") UUID id) {
         return postService.getPostById(id);
+    }
+
+    @PostMapping("/like")
+    public void like(@RequestBody LikeRequest likeRequest) {
+        postService.likePost(likeRequest.getPostId());
     }
 }

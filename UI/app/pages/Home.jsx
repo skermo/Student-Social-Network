@@ -34,7 +34,7 @@ const Home = ({ navigation }) => {
         <View className="flex align-center justify-center mx-4">
           {posts &&
             posts.length > 0 &&
-            posts.map((value, key) => <GridItem post={value} key={value.id} />)}
+            posts.map((value, key) => <GridItem post={value} navigation={navigation} key={value.id} />)}
         </View>
         <Button onPress={logoutUser} title="Logout" />
       </SafeAreaView>
