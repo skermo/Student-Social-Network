@@ -1,6 +1,8 @@
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import { Image, Modal, ScrollView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import GestureRecognizer from "react-native-swipe-gestures";
 import { crimson, lightGrey, raisin } from "../../assets/styles/variables";
 import { getCollegeById } from "../services/CollegeService";
 import { likePost } from "../services/PostService";
@@ -13,12 +15,14 @@ import {
   truncateText,
 } from "../utils/Formatter";
 import CustomText from "./CustomText";
+import CustomTextInput from "./CustomTextInput";
 
 const GridItem = ({ post, navigation }) => {
   const [user, setUser] = useState("");
   const [college, setCollege] = useState("");
   const [readMore, setReadMore] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [openComments, setOpenComments] = useState(false);
 
   useEffect(() => {
     console.log(post);
@@ -39,6 +43,56 @@ const GridItem = ({ post, navigation }) => {
 
   return (
     <View>
+      <GestureRecognizer onSwipeDown={() => setOpenComments(false)}>
+        <ScrollView automaticallyAdjustKeyboardInsets={true}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={openComments}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <SafeAreaView>
+              <View className="flex flex-row justify-center items-end h-full">
+                <View className="bg-raisin-600 w-full h-4/6 rounded-2xl">
+                  <CustomText classes="text-lg text-center py-3 text-slate-50">
+                    Komentari
+                  </CustomText>
+                  <View className="border-b-light border-slate-50" />
+                  {!post && !post.comments.length > 0 ? (
+                    <CustomText>Ima</CustomText>
+                  ) : (
+                    <View className="h-4/6 w-full">
+                      <View className="flex justify-center h-full">
+                        <View>
+                          <CustomText
+                            classes="text-slate-50 text-xl text-center pb-2"
+                            fontFamily="bold"
+                          >
+                            Nema komentara
+                          </CustomText>
+                          <CustomText
+                            classes="text-slate-50 text-center"
+                            onPress={() => setOpenComments(!openComments)}
+                          >
+                            Započni razgovor
+                          </CustomText>
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  <CustomTextInput
+                    classes="border border-slate-50 w-screen mt-8"
+                    placeholder="Dodaj komentar..."
+                  ></CustomTextInput>
+                </View>
+              </View>
+            </SafeAreaView>
+          </Modal>
+        </ScrollView>
+      </GestureRecognizer>
       {post && user && (
         <>
           <View className="flex flex-row align-start justify-around mb-5">
@@ -125,7 +179,12 @@ const GridItem = ({ post, navigation }) => {
                   <CustomText classes="text-xs mx-1">
                     {post.likes.length}
                   </CustomText>
-                  <FontAwesome name="comments-o" size={24} color={raisin} />
+                  <FontAwesome
+                    name="comments-o"
+                    size={24}
+                    color={raisin}
+                    onPress={() => setOpenComments(!openComments)}
+                  />
                   <CustomText classes="text-xs ml-1">
                     {post.comments.length}
                   </CustomText>
