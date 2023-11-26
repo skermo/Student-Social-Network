@@ -19,13 +19,9 @@ import java.util.UUID;
 public class LikeServiceImpl implements LikeService {
     private final ModelMapper mapper;
     private final LikeRepository likeRepository;
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
-    public LikeServiceImpl(LikeRepository likeRepository, PostRepository postRepository, UserRepository userRepository, ModelMapper mapper) {
+    public LikeServiceImpl(LikeRepository likeRepository, ModelMapper mapper) {
         this.likeRepository = likeRepository;
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 

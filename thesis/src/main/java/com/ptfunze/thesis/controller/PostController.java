@@ -1,6 +1,7 @@
 package com.ptfunze.thesis.controller;
 
 import com.ptfunze.thesis.dto.PostDto;
+import com.ptfunze.thesis.request.CommentRequest;
 import com.ptfunze.thesis.request.LikeRequest;
 import com.ptfunze.thesis.service.PostService;
 import org.springframework.data.domain.Page;
@@ -43,5 +44,10 @@ public class PostController {
     @PostMapping("/like")
     public void like(@RequestBody LikeRequest likeRequest) {
         postService.likePost(likeRequest.getPostId());
+    }
+
+    @PostMapping("/comment")
+    public void comment(@RequestBody CommentRequest commentRequest) {
+        postService.commentPost(commentRequest);
     }
 }

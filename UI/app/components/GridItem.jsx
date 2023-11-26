@@ -1,6 +1,8 @@
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import { useHeaderHeight } from "@react-navigation/elements";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, Modal, ScrollView, TouchableOpacity, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { crimson, lightGrey, raisin } from "../../assets/styles/variables";
@@ -24,6 +26,27 @@ const GridItem = ({ post, navigation }) => {
   const [liked, setLiked] = useState(false);
   const [openComments, setOpenComments] = useState(false);
 
+  const [isScrolling, setScrolling] = useState(false);
+  const scrollViewRef = useRef(null);
+
+  const height = useHeaderHeight();
+
+  const onSwipeDown = () => {
+    if (!isScrolling) {
+      setOpenComments(false)
+    }
+  };
+
+  const onScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    setScrolling(offsetY > 0);
+  };
+
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 80,
+  };
+
   useEffect(() => {
     console.log(post);
     if (userLikedPost(post.likes)) setLiked(true);
@@ -43,55 +66,86 @@ const GridItem = ({ post, navigation }) => {
 
   return (
     <View>
-      <GestureRecognizer onSwipeDown={() => setOpenComments(false)}>
-        <ScrollView automaticallyAdjustKeyboardInsets={true}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={openComments}
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <SafeAreaView>
-              <View className="flex flex-row justify-center items-end h-full">
-                <View className="bg-raisin-600 w-full h-4/6 rounded-2xl">
-                  <CustomText classes="text-lg text-center py-3 text-slate-50">
-                    Komentari
-                  </CustomText>
-                  <View className="border-b-light border-slate-50" />
-                  {!post && !post.comments.length > 0 ? (
-                    <CustomText>Ima</CustomText>
-                  ) : (
-                    <View className="h-4/6 w-full">
-                      <View className="flex justify-center h-full">
-                        <View>
-                          <CustomText
-                            classes="text-slate-50 text-xl text-center pb-2"
-                            fontFamily="bold"
-                          >
-                            Nema komentara
-                          </CustomText>
-                          <CustomText
-                            classes="text-slate-50 text-center"
-                            onPress={() => setOpenComments(!openComments)}
-                          >
-                            Započni razgovor
-                          </CustomText>
-                        </View>
+      <GestureRecognizer onSwipeDown={onSwipeDown} config={config}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openComments}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <SafeAreaView style={{ flex: 1 }}>
+          <KeyboardAwareScrollView
+                  contentContainerStyle={{ flex: 1 }}
+                  keyboardDismissMode="interactive"
+                  keyboardShouldPersistTaps="always"
+                  extraScrollHeight={-10}
+                >
+            <View style={{flex:1, justifyContent: "flex-end"}}>
+              <View className="bg-raisin-600 w-full h-4/6 rounded-2xl">
+                <CustomText classes="text-lg text-center py-3 text-slate-50">
+                  Komentari
+                </CustomText>
+                <View className="border-b-light border-slate-50" />
+                {!post || !post.comments.length > 0 ? (
+                  <ScrollView className="w-full"         ref={scrollViewRef}
+                  onScroll={onScroll}>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+                  <CustomText>Semra</CustomText>
+
+                </ScrollView>
+                ) : (
+                  <View className="h-4/6 w-full">
+                    <View className="flex justify-center h-full">
+                      <View>
+                        <CustomText
+                          classes="text-slate-50 text-xl text-center pb-2"
+                          fontFamily="bold"
+                        >
+                          Nema komentara
+                        </CustomText>
+                        <CustomText
+                          classes="text-slate-50 text-center"
+                          onPress={() => setOpenComments(!openComments)}
+                        >
+                          Započni razgovor
+                        </CustomText>
                       </View>
                     </View>
-                  )}
-                  <CustomTextInput
-                    classes="border border-slate-50 w-screen mt-8"
-                    placeholder="Dodaj komentar..."
-                  ></CustomTextInput>
-                </View>
+                  </View>
+                )}
+                    <CustomTextInput
+                      classes="border border-slate-50 w-screen mt-8 mb-8"
+                      placeholder="Dodaj komentar..."
+                    ></CustomTextInput>
               </View>
-            </SafeAreaView>
-          </Modal>
-        </ScrollView>
+            </View>
+            </KeyboardAwareScrollView>
+          </SafeAreaView>
+        </Modal>
       </GestureRecognizer>
       {post && user && (
         <>

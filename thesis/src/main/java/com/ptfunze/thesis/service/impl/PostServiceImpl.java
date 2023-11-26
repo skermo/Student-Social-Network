@@ -1,5 +1,6 @@
 package com.ptfunze.thesis.service.impl;
 
+import com.ptfunze.thesis.dto.CommentDto;
 import com.ptfunze.thesis.dto.LikeDto;
 import com.ptfunze.thesis.dto.PostDto;
 import com.ptfunze.thesis.entity.Like;
@@ -7,10 +8,12 @@ import com.ptfunze.thesis.entity.Post;
 import com.ptfunze.thesis.entity.User;
 import com.ptfunze.thesis.exception.NotFoundException;
 import com.ptfunze.thesis.exception.UnauthorizedException;
+import com.ptfunze.thesis.repository.CommentRepository;
 import com.ptfunze.thesis.repository.LikeRepository;
 import com.ptfunze.thesis.repository.PostRepository;
 import com.ptfunze.thesis.repository.UserRepository;
-import com.ptfunze.thesis.service.LikeService;
+import com.ptfunze.thesis.request.CommentRequest;
+import com.ptfunze.thesis.service.CommentService;
 import com.ptfunze.thesis.service.PostService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -29,13 +32,17 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final LikeServiceImpl likeService;
+    private final CommentRepository commentRepository;
+    private final CommentServiceImpl commentService;
     private final ModelMapper mapper;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, LikeServiceImpl likeService, ModelMapper mapper) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, LikeServiceImpl likeService, CommentRepository commentRepository, CommentServiceImpl commentService, ModelMapper mapper) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
         this.likeService = likeService;
+        this.commentRepository = commentRepository;
+        this.commentService = commentService;
         this.mapper = mapper;
     }
 
@@ -78,12 +85,22 @@ public class PostServiceImpl implements PostService {
                 .userId(getAuthUser().getId())
                 .build();
 
-        System.out.println(likeRepository.existsByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId()));
-
         if (likeRepository.existsByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId())) {
             Like like = likeRepository.findByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId());
             likeRepository.delete(like.getId());
         } else likeRepository.save(likeService.mapToEntity(likeDto));
+    }
+
+    @Override
+    public void commentPost(CommentRequest commentRequest) {
+        postRepository.findById(commentRequest.getPostId()).orElseThrow(() -> new NotFoundException("Post not found"));
+        CommentDto commentDto = CommentDto.builder()
+                .postId(commentRequest.getPostId())
+                .userId(getAuthUser().getId())
+                .text(commentRequest.getText())
+                .build();
+
+        commentRepository.save(commentService.mapToEntity(commentDto));
     }
 
     private PostDto mapToDto(Post post) {
