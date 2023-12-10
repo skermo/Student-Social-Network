@@ -13,7 +13,9 @@ const CustomTextInput = ({
   multiline = false,
   numberOfLines = 1,
   placeholderTextColor,
-  keyboardType
+  keyboardType,
+  returnKeyType,
+  onSubmitEditing
 }) => {
   return (
     <TextInput
@@ -28,6 +30,8 @@ const CustomTextInput = ({
       placeholderTextColor={placeholderTextColor}
       keyboardType={keyboardType}
       blurOnSubmit={true}
+      returnKeyType={returnKeyType}
+      onSubmitEditing={onSubmitEditing}
       className={classNames("rounded-2xl p-3 mt-2 mb-3", classes)}
     />
   );

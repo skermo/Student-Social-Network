@@ -105,11 +105,11 @@ public class AuthServiceImpl implements AuthService {
         return mapToDto(user);
     }
 
-    private UserDto mapToDto(User user) {
+    public UserDto mapToDto(User user) {
         return mapper.map(user, UserDto.class);
     }
 
-    private User mapToEntity(UserDto userDto) {
+    public User mapToEntity(UserDto userDto) {
         return mapper.map(userDto, User.class);
     }
 }

@@ -13,7 +13,6 @@ import com.ptfunze.thesis.repository.LikeRepository;
 import com.ptfunze.thesis.repository.PostRepository;
 import com.ptfunze.thesis.repository.UserRepository;
 import com.ptfunze.thesis.request.CommentRequest;
-import com.ptfunze.thesis.service.CommentService;
 import com.ptfunze.thesis.service.PostService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -32,15 +31,17 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final LikeServiceImpl likeService;
+    private final AuthServiceImpl authService;
     private final CommentRepository commentRepository;
     private final CommentServiceImpl commentService;
     private final ModelMapper mapper;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, LikeServiceImpl likeService, CommentRepository commentRepository, CommentServiceImpl commentService, ModelMapper mapper) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, LikeServiceImpl likeService, AuthServiceImpl authService, CommentRepository commentRepository, CommentServiceImpl commentService, ModelMapper mapper) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
         this.likeService = likeService;
+        this.authService = authService;
         this.commentRepository = commentRepository;
         this.commentService = commentService;
         this.mapper = mapper;
@@ -96,11 +97,20 @@ public class PostServiceImpl implements PostService {
         postRepository.findById(commentRequest.getPostId()).orElseThrow(() -> new NotFoundException("Post not found"));
         CommentDto commentDto = CommentDto.builder()
                 .postId(commentRequest.getPostId())
-                .userId(getAuthUser().getId())
+                .user(authService.mapToDto(getAuthUser()))
                 .text(commentRequest.getText())
                 .build();
 
         commentRepository.save(commentService.mapToEntity(commentDto));
+    }
+
+    @Override
+    public Page<PostDto> searchPosts(String name, String category, String university, String college,
+                                     int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = !sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Post> posts = postRepository.searchItems(name, category, university, college, pageable);
+        return posts.map(this::mapToDto);
     }
 
     private PostDto mapToDto(Post post) {

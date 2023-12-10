@@ -1,11 +1,8 @@
 import { ApiRequest } from "../../config";
 
-export const addNewPost = (post) => {
-  return ApiRequest()
-    .post(`posts`, post)
-    .then((response) => {
-      return response.data;
-    });
+export const addNewPost = async (post) => {
+  const response = await ApiRequest().post(`posts`, post);
+  return response.data;
 };
 
 export const getPosts = async (pageNo = 0) => {
@@ -16,10 +13,12 @@ export const getPosts = async (pageNo = 0) => {
   );
 };
 
-export const likePost = (likeRequest) => {
-  return ApiRequest()
-    .post(`posts/like`, likeRequest)
-    .then((response) => {
-      return response.data;
-    });
+export const likePost = async (likeRequest) => {
+  const response = await ApiRequest().post(`posts/like`, likeRequest);
+  return response.data;
+};
+
+export const commentPost = async (commentRequest) => {
+  const response = await ApiRequest().post(`posts/comment`, commentRequest);
+  return response.data;
 };

@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { crimson, lightGrey, raisin } from "../../assets/styles/variables";
 import { getCollegeById } from "../services/CollegeService";
-import { likePost } from "../services/PostService";
+import { commentPost, likePost } from "../services/PostService";
 import { getUserById } from "../services/UserService";
 import {
   formatCollegeName,
@@ -25,6 +25,8 @@ const GridItem = ({ post, navigation }) => {
   const [readMore, setReadMore] = useState(false);
   const [liked, setLiked] = useState(false);
   const [openComments, setOpenComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [text, setText] = useState("");
 
   const [isScrolling, setScrolling] = useState(false);
   const scrollViewRef = useRef(null);
@@ -33,7 +35,7 @@ const GridItem = ({ post, navigation }) => {
 
   const onSwipeDown = () => {
     if (!isScrolling) {
-      setOpenComments(false)
+      setOpenComments(false);
     }
   };
 
@@ -48,8 +50,8 @@ const GridItem = ({ post, navigation }) => {
   };
 
   useEffect(() => {
-    console.log(post);
     if (userLikedPost(post.likes)) setLiked(true);
+    setComments(post.comments);
 
     getUserById(post.userId).then((res) => setUser(res));
     getCollegeById(post.collegeId).then((res) => setCollege(res));
@@ -58,6 +60,11 @@ const GridItem = ({ post, navigation }) => {
   const like = () => {
     setLiked(!liked);
     likePost({ postId: post.id });
+  };
+
+  const comment = () => {
+    commentPost({ postId: post.id, text: text });
+    setText("");
   };
 
   const userLikedPost = (likes) => {
@@ -77,72 +84,91 @@ const GridItem = ({ post, navigation }) => {
           }}
         >
           <SafeAreaView style={{ flex: 1 }}>
-          <KeyboardAwareScrollView
-                  contentContainerStyle={{ flex: 1 }}
-                  keyboardDismissMode="interactive"
-                  keyboardShouldPersistTaps="always"
-                  extraScrollHeight={-10}
-                >
-            <View style={{flex:1, justifyContent: "flex-end"}}>
-              <View className="bg-raisin-600 w-full h-4/6 rounded-2xl">
-                <CustomText classes="text-lg text-center py-3 text-slate-50">
-                  Komentari
-                </CustomText>
-                <View className="border-b-light border-slate-50" />
-                {!post || !post.comments.length > 0 ? (
-                  <ScrollView className="w-full"         ref={scrollViewRef}
-                  onScroll={onScroll}>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-                  <CustomText>Semra</CustomText>
-
-                </ScrollView>
-                ) : (
-                  <View className="h-4/6 w-full">
-                    <View className="flex justify-center h-full">
-                      <View>
-                        <CustomText
-                          classes="text-slate-50 text-xl text-center pb-2"
-                          fontFamily="bold"
-                        >
-                          Nema komentara
-                        </CustomText>
-                        <CustomText
-                          classes="text-slate-50 text-center"
-                          onPress={() => setOpenComments(!openComments)}
-                        >
-                          Započni razgovor
-                        </CustomText>
+            <KeyboardAwareScrollView
+              contentContainerStyle={{ flex: 1 }}
+              keyboardDismissMode="interactive"
+              keyboardShouldPersistTaps="always"
+              extraScrollHeight={-10}
+            >
+              <View style={{ flex: 1, justifyContent: "flex-end" }}>
+                <View className="bg-raisin-600 w-full h-4/6 rounded-2xl">
+                  <CustomText classes="text-lg text-center py-3 text-slate-50">
+                    Komentari
+                  </CustomText>
+                  <View className="border-b-light border-slate-50" />
+                  {post.comments && post.comments.length > 0 ? (
+                    <ScrollView
+                      className="w-full"
+                      ref={scrollViewRef}
+                      onScroll={onScroll}
+                    >
+                      {comments &&
+                        comments.map((comment, key) => (
+                          <View className="bg-slate-50 rounded-2xl m-3 p-3">
+                            <View className="border-b-light border-raisin-500">
+                              <View className="flex flex-row align-center justify-between">
+                                <CustomText fontFamily="black">
+                                  {formatFullName(comment.user)}
+                                </CustomText>
+                                <View className="flex flex-row items-center">
+                                  <Entypo
+                                    name="back-in-time"
+                                    size={12}
+                                    color={lightGrey}
+                                  />
+                                  <CustomText
+                                    fontFamily="light"
+                                    classes="text-xs ml-1"
+                                  >
+                                    {formatTimePassed(comment.createdOn)} ago
+                                  </CustomText>
+                                </View>
+                              </View>
+                              <View className="flex flex-row items-center">
+                                <Entypo
+                                  name="location-pin"
+                                  size={12}
+                                  color={crimson}
+                                />
+                                <CustomText classes="text-xs">
+                                  {formatCollegeName(comment.user.college)}
+                                </CustomText>
+                              </View>
+                            </View>
+                            <CustomText>{comment.text}</CustomText>
+                          </View>
+                        ))}
+                    </ScrollView>
+                  ) : (
+                    <View className="h-4/6 w-full">
+                      <View className="flex justify-center h-full">
+                        <View>
+                          <CustomText
+                            classes="text-slate-50 text-xl text-center pb-2"
+                            fontFamily="bold"
+                          >
+                            Nema komentara
+                          </CustomText>
+                          <CustomText
+                            classes="text-slate-50 text-center"
+                            onPress={() => setOpenComments(!openComments)}
+                          >
+                            Započni razgovor
+                          </CustomText>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                )}
-                    <CustomTextInput
-                      classes="border border-slate-50 w-screen mt-8 mb-8"
-                      placeholder="Dodaj komentar..."
-                    ></CustomTextInput>
+                  )}
+                  <CustomTextInput
+                    returnKeyType="done"
+                    onSubmitEditing={() => comment()}
+                    value={text}
+                    onChangeText={setText}
+                    classes="border border-slate-50 w-screen mt-8 mb-8"
+                    placeholder="Dodaj komentar..."
+                  ></CustomTextInput>
+                </View>
               </View>
-            </View>
             </KeyboardAwareScrollView>
           </SafeAreaView>
         </Modal>

@@ -23,6 +23,6 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private Set<RoleDto> roles;
-    private UUID collegeId;
+    private CollegeDto college;
     private String imageUrl;
 }

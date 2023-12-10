@@ -13,4 +13,6 @@ public interface PostService {
     PostDto getPostById(UUID id);
     void likePost(UUID id);
     void commentPost(CommentRequest commentRequest);
+    Page<PostDto> searchPosts(String name, String category, String university, String college,
+                              int pageNo, int pageSize, String sortBy, String sortDir);
 }

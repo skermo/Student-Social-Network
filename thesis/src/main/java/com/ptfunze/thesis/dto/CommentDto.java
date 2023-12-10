@@ -15,6 +15,6 @@ public class CommentDto {
     private String text;
     private ZonedDateTime createdOn;
     private ZonedDateTime updatedOn;
-    private UUID userId;
+    private UserDto user;
     private UUID postId;
 }

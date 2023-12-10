@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -49,5 +48,19 @@ public class PostController {
     @PostMapping("/comment")
     public void comment(@RequestBody CommentRequest commentRequest) {
         postService.commentPost(commentRequest);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PostDto>> searchItems(
+            @RequestParam("name") String name,
+            @RequestParam("category") String category,
+            @RequestParam("university") String university,
+            @RequestParam("college") String college,
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "2", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+        return new ResponseEntity<>(postService.searchPosts(name, category, university, college,
+                pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 }
