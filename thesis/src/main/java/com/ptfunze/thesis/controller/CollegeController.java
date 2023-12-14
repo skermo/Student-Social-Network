@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/collages")
+@RequestMapping("/api/colleges")
 public class CollegeController {
     private final CollegeService collegeService;
 
@@ -32,5 +32,10 @@ public class CollegeController {
     @GetMapping("/{id}")
     public CollegeDto getCollegeById(@PathVariable(name = "id") UUID id){
         return collegeService.getCollegeById(id);
+    }
+
+    @GetMapping("/university/{id}")
+    public ResponseEntity<List<CollegeDto>> getCollagesByUniversityId(@PathVariable(name = "id") UUID id){
+        return new ResponseEntity<>(collegeService.getCollagesByUniversityId(id), HttpStatus.OK);
     }
 }

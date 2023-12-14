@@ -54,6 +54,14 @@ public class CollegeServiceImpl implements CollegeService {
                 .orElseThrow(() -> new NotFoundException("College not found")));
     }
 
+    @Override
+    public List<CollegeDto> getCollagesByUniversityId(UUID universityId) {
+        List<College> colleges = collegeRepository.findByUniversityId(universityId);
+        return colleges.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
     private CollegeDto mapToDto(College college) {
         return mapper.map(college, CollegeDto.class);
     }
