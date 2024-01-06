@@ -31,6 +31,16 @@ const Search = () => {
   const [colleges, setColleges] = useState([]);
   const [college, setCollege] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
+  const [openSort, setOpenSort] = useState(false);
+  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortBy, setSortBy] = useState("createdOn");
+
+  const sortOptions = [
+    { key: "title", value: "Title" },
+    { key: "createdOn", value: "Date" },
+    { key: "likes", value: "Likes" },
+    { key: "comments", value: "Comments" },
+  ];
 
   const onCategoryRadioPress = (value) => {
     if (category && value.name == category) setCategory("");
@@ -42,6 +52,7 @@ const Search = () => {
     else {
       getCollegesByUniversityId(value.id).then((res) => setColleges(res));
       setUniversity(value.fullName);
+      setCollege(null);
     }
   };
 
@@ -126,6 +137,52 @@ const Search = () => {
           </CustomDropdown>
         )}
       </CustomModal>
+      <CustomModal
+        title="Sort options"
+        openModal={openSort}
+        setOpenModal={setOpenSort}
+      >
+        <CustomText classes="text-slate-50 ml-5 mt-5">Sort by</CustomText>
+        <View className="border-l-light border-slate-50 pl-4 ml-10 mt-2">
+          {sortOptions.map((value, key) => (
+            <CustomRadioButton
+              key={value.key}
+              label={value.value}
+              isSelected={value.key == sortBy}
+              onPress={() => {
+                setSortBy(value.key);
+              }}
+              classes="py-0.5"
+              textClasses="text-slate-50 text-s"
+            />
+          ))}
+        </View>
+        <CustomText classes="text-slate-50 ml-5 mt-5">
+          Sort direction
+        </CustomText>
+        <View className="border-l-light border-slate-50 pl-4 ml-10 mt-2">
+          <CustomRadioButton
+            key={"asc"}
+            label="Ascending"
+            isSelected={"asc" == sortDirection}
+            onPress={() => {
+              setSortDirection("asc");
+            }}
+            classes="py-0.5"
+            textClasses="text-slate-50 text-s"
+          />
+          <CustomRadioButton
+            key={"desc"}
+            label="Descending"
+            isSelected={"desc" == sortDirection}
+            onPress={() => {
+              setSortDirection("desc");
+            }}
+            classes="py-0.5"
+            textClasses="text-slate-50 text-s"
+          />
+        </View>
+      </CustomModal>
       <ScrollView>
         <SafeAreaView className="text-center bg-raisin-500 h-full flex justify-center">
           <View className="mx-5">
@@ -139,6 +196,13 @@ const Search = () => {
               onPress={() => setOpenFilter(true)}
             >
               Filter
+            </CustomText>
+            <CustomText
+              classes="text-slate-50 text-right underline"
+              fontFamily="light"
+              onPress={() => setOpenSort(true)}
+            >
+              Sort
             </CustomText>
           </View>
         </SafeAreaView>
