@@ -1,6 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button } from "react-native";
 import { crimson, raisin } from "../../assets/styles/variables";
 import Tabs from "../components/Tabs";
 import useAuth from "../hooks/useAuth";
@@ -24,9 +23,6 @@ const Layout = () => {
           <Stack.Screen
             name="Tabs"
             component={Tabs}
-            options={{
-              headerRight: () => <Button onPress={logoutUser} title="Logout" />,
-            }}
           ></Stack.Screen>
         ) : (
           <Stack.Screen name="Login" component={Login}></Stack.Screen>

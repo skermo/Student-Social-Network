@@ -24,5 +24,6 @@ public class UserDto {
     private String lastName;
     private Set<RoleDto> roles;
     private CollegeDto college;
+    private UniversityDto university;
     private String imageUrl;
 }

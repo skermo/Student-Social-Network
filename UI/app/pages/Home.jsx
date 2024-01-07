@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Image, ScrollView, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "../components/CustomText";
 import GridItem from "../components/GridItem";
@@ -36,7 +36,6 @@ const Home = ({ navigation }) => {
             posts.length > 0 &&
             posts.map((value, key) => <GridItem post={value} navigation={navigation} key={value.id} />)}
         </View>
-        <Button onPress={logoutUser} title="Logout" />
       </SafeAreaView>
     </ScrollView>
   );

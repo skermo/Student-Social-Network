@@ -1,5 +1,4 @@
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
-import { useHeaderHeight } from "@react-navigation/elements";
 import React, { useEffect, useRef, useState } from "react";
 import { Image, Modal, ScrollView, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -30,8 +29,6 @@ const GridItem = ({ post, navigation }) => {
 
   const [isScrolling, setScrolling] = useState(false);
   const scrollViewRef = useRef(null);
-
-  const height = useHeaderHeight();
 
   const onSwipeDown = () => {
     if (!isScrolling) {
