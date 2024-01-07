@@ -47,6 +47,12 @@ public class Post {
     @Column(name = "is_private")
     private boolean isPrivate = false;
 
+    @Column(name = "number_of_likes")
+    private int numberOfLikes = 0;
+
+    @Column(name = "number_of_comments")
+    private int numberOfComments = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;

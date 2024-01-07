@@ -24,6 +24,8 @@ public class PostDto {
     private UUID collegeId;
     private UUID universityId;
     private boolean isPrivate;
+    private int numberOfLikes;
+    private int numberOfComments;
     private List<LikeDto> likes;
     private List<CommentDto> comments;
 }

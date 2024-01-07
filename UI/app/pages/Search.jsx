@@ -6,12 +6,14 @@ import CustomModal from "../components/CustomModal";
 import CustomRadioButton from "../components/CustomRadioButton";
 import CustomText from "../components/CustomText";
 import CustomTextInput from "../components/CustomTextInput";
+import GridItem from "../components/GridItem";
 import useAuth from "../hooks/useAuth";
 import { getAllCategories } from "../services/CategoryService";
 import { getCollegesByUniversityId } from "../services/CollegeService";
+import { searchPosts } from "../services/PostService";
 import { getAllUniversities } from "../services/UniversityService";
 
-const Search = () => {
+const Search = ({ navigation }) => {
   const { loading } = useAuth();
 
   useEffect(() => {
@@ -32,15 +34,34 @@ const Search = () => {
   const [college, setCollege] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const [openSort, setOpenSort] = useState(false);
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [sortBy, setSortBy] = useState("createdOn");
+  const [posts, setPosts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    search();
+  }, [category, university, college, sortBy, sortDirection]);
 
   const sortOptions = [
-    { key: "title", value: "Title" },
-    { key: "createdOn", value: "Date" },
-    { key: "likes", value: "Likes" },
-    { key: "comments", value: "Comments" },
+    { key: "title", value: "Naziv" },
+    { key: "createdOn", value: "Datum" },
+    { key: "numberOfLikes", value: "Lajkovi" },
+    { key: "numberOfComments", value: "Komentari" },
   ];
+
+  const search = () => {
+    console.log(category);
+    searchPosts(
+      0,
+      searchInput,
+      category,
+      university,
+      college,
+      sortBy,
+      sortDirection
+    ).then((res) => setPosts(res.data.content));
+  };
 
   const onCategoryRadioPress = (value) => {
     if (category && value.name == category) setCategory("");
@@ -52,7 +73,7 @@ const Search = () => {
     else {
       getCollegesByUniversityId(value.id).then((res) => setColleges(res));
       setUniversity(value.fullName);
-      setCollege(null);
+      setCollege("");
     }
   };
 
@@ -62,14 +83,14 @@ const Search = () => {
   };
 
   return (
-    <View>
+    <View className="bg-raisin-500 h-full">
       <CustomModal
         title="Filter"
         openModal={openFilter}
         setOpenModal={setOpenFilter}
       >
         <CustomDropdown
-          title="Category"
+          title="Kategorija"
           open={openCategories}
           setOpen={setOpenCategories}
         >
@@ -91,7 +112,7 @@ const Search = () => {
           )}
         </CustomDropdown>
         <CustomDropdown
-          title="University"
+          title="Univerzitet"
           open={openUniversities}
           setOpen={setOpenUniversities}
         >
@@ -114,7 +135,7 @@ const Search = () => {
         </CustomDropdown>
         {university && (
           <CustomDropdown
-            title="College"
+            title="Fakultet"
             open={openColleges}
             setOpen={setOpenColleges}
           >
@@ -138,11 +159,11 @@ const Search = () => {
         )}
       </CustomModal>
       <CustomModal
-        title="Sort options"
+        title="Sortiranje"
         openModal={openSort}
         setOpenModal={setOpenSort}
       >
-        <CustomText classes="text-slate-50 ml-5 mt-5">Sort by</CustomText>
+        <CustomText classes="text-slate-50 ml-5 mt-5">Sortiraj po</CustomText>
         <View className="border-l-light border-slate-50 pl-4 ml-10 mt-2">
           {sortOptions.map((value, key) => (
             <CustomRadioButton
@@ -158,12 +179,12 @@ const Search = () => {
           ))}
         </View>
         <CustomText classes="text-slate-50 ml-5 mt-5">
-          Sort direction
+          Smjer soritanja
         </CustomText>
         <View className="border-l-light border-slate-50 pl-4 ml-10 mt-2">
           <CustomRadioButton
             key={"asc"}
-            label="Ascending"
+            label="Rastući"
             isSelected={"asc" == sortDirection}
             onPress={() => {
               setSortDirection("asc");
@@ -173,7 +194,7 @@ const Search = () => {
           />
           <CustomRadioButton
             key={"desc"}
-            label="Descending"
+            label="Opadajući"
             isSelected={"desc" == sortDirection}
             onPress={() => {
               setSortDirection("desc");
@@ -185,25 +206,46 @@ const Search = () => {
       </CustomModal>
       <ScrollView>
         <SafeAreaView className="text-center bg-raisin-500 h-full flex justify-center">
-          <View className="mx-5">
+          <View className="mx-5 mt-5">
             <CustomTextInput
               placeholder="Pretraži.. "
               classes="w-full bg-slate-50"
+              onSubmitEditing={() => search()}
+              value={searchInput}
+              onChangeText={setSearchInput}
+              returnKeyType="done"
             />
-            <CustomText
-              classes="text-slate-50 text-right underline"
-              fontFamily="light"
-              onPress={() => setOpenFilter(true)}
-            >
-              Filter
-            </CustomText>
-            <CustomText
-              classes="text-slate-50 text-right underline"
-              fontFamily="light"
-              onPress={() => setOpenSort(true)}
-            >
-              Sort
-            </CustomText>
+            <View className="flex flex-row justify-end mb-5">
+              <CustomText
+                classes="text-slate-50 text-right underline mr-4"
+                fontFamily="light"
+                onPress={() => setOpenFilter(true)}
+              >
+                Filter
+              </CustomText>
+              <CustomText
+                classes="text-slate-50 text-right underline"
+                fontFamily="light"
+                onPress={() => setOpenSort(true)}
+              >
+                Sort
+              </CustomText>
+            </View>
+          </View>
+          <View className="flex align-center justify-center mx-4">
+            {posts &&
+              posts.length > 0 &&
+              posts.map((value, key) => (
+                <GridItem post={value} navigation={navigation} key={value.id} />
+              ))}
+            {posts && posts.length == 0 && (
+              <CustomText
+                classes="text-slate-50 text-xl text-center pb-2 mt-36"
+                fontFamily="bold"
+              >
+                Nema postova na uneseni filter.
+              </CustomText>
+            )}
           </View>
         </SafeAreaView>
       </ScrollView>

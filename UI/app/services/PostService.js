@@ -22,3 +22,19 @@ export const commentPost = async (commentRequest) => {
   const response = await ApiRequest().post(`posts/comment`, commentRequest);
   return response.data;
 };
+
+export const searchPosts = async (
+  pageNo = 0,
+  name = "",
+  category = "",
+  university = "",
+  college = "",
+  sortBy = "createdOn",
+  sortDir = "desc"
+) => {
+  return (
+    ApiRequest().get(
+      `posts/search?pageNo=${pageNo}&pageSize=8&name=${name}&category=${category}&university=${university}&college=${college}&sortBy=${sortBy}&sortDir=${sortDir}`
+    ) || []
+  );
+};

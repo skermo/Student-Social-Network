@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void likePost(UUID id) {
-        postRepository.findById(id).orElseThrow(() -> new NotFoundException("Post not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new NotFoundException("Post not found"));
         LikeDto likeDto = LikeDto.builder()
                 .postId(id)
                 .userId(getAuthUser().getId())
@@ -89,12 +89,18 @@ public class PostServiceImpl implements PostService {
         if (likeRepository.existsByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId())) {
             Like like = likeRepository.findByUserIdAndPostId(likeDto.getUserId(), likeDto.getPostId());
             likeRepository.delete(like.getId());
-        } else likeRepository.save(likeService.mapToEntity(likeDto));
+            post.setNumberOfLikes(post.getNumberOfLikes() - 1);
+            postRepository.save(post);
+        } else {
+            likeRepository.save(likeService.mapToEntity(likeDto));
+            post.setNumberOfLikes(post.getNumberOfLikes() + 1);
+            postRepository.save(post);
+        }
     }
 
     @Override
     public void commentPost(CommentRequest commentRequest) {
-        postRepository.findById(commentRequest.getPostId()).orElseThrow(() -> new NotFoundException("Post not found"));
+        Post post = postRepository.findById(commentRequest.getPostId()).orElseThrow(() -> new NotFoundException("Post not found"));
         CommentDto commentDto = CommentDto.builder()
                 .postId(commentRequest.getPostId())
                 .user(authService.mapToDto(getAuthUser()))
@@ -102,6 +108,8 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         commentRepository.save(commentService.mapToEntity(commentDto));
+        post.setNumberOfComments(post.getNumberOfComments() + 1);
+        postRepository.save(post);
     }
 
     @Override
