@@ -101,7 +101,7 @@ const GridItem = ({ post, navigation }) => {
                     >
                       {comments &&
                         comments.map((comment, key) => (
-                          <View className="bg-slate-50 rounded-2xl m-3 p-3">
+                          <View className="bg-slate-50 rounded-2xl m-3 p-3" key={comment.id}>
                             <View className="border-b-light border-raisin-500">
                               <View className="flex flex-row align-center justify-between">
                                 <CustomText fontFamily="black">

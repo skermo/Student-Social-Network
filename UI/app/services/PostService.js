@@ -8,7 +8,7 @@ export const addNewPost = async (post) => {
 export const getPosts = async (pageNo = 0) => {
   return (
     ApiRequest().get(
-      `posts?pageNo=${pageNo}&pageSize=8&sortBy=createdOn&sortDir=desc`
+      `posts?pageNo=${pageNo}&pageSize=3&sortBy=createdOn&sortDir=desc`
     ) || []
   );
 };
@@ -34,7 +34,7 @@ export const searchPosts = async (
 ) => {
   return (
     ApiRequest().get(
-      `posts/search?pageNo=${pageNo}&pageSize=8&name=${name}&category=${category}&university=${university}&college=${college}&sortBy=${sortBy}&sortDir=${sortDir}`
+      `posts/search?pageNo=${pageNo}&pageSize=3&name=${name}&category=${category}&university=${university}&college=${college}&sortBy=${sortBy}&sortDir=${sortDir}`
     ) || []
   );
 };

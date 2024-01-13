@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import CustomButton from "../components/CustomButton";
 import CustomDropdown from "../components/CustomDropdown";
 import CustomModal from "../components/CustomModal";
 import CustomRadioButton from "../components/CustomRadioButton";
@@ -38,6 +39,8 @@ const Search = ({ navigation }) => {
   const [sortBy, setSortBy] = useState("createdOn");
   const [posts, setPosts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [page, setPage] = useState(0);
+  const [last, setLast] = useState(true);
 
   useEffect(() => {
     search();
@@ -51,7 +54,6 @@ const Search = ({ navigation }) => {
   ];
 
   const search = () => {
-    console.log(category);
     searchPosts(
       0,
       searchInput,
@@ -60,7 +62,27 @@ const Search = ({ navigation }) => {
       college,
       sortBy,
       sortDirection
-    ).then((res) => setPosts(res.data.content));
+    ).then((res) => {
+      setPosts(res.data.content);
+      setLast(res.data.last);
+      setPage(0);
+    });
+  };
+
+  const fetchData = () => {
+    searchPosts(
+      page + 1,
+      searchInput,
+      category,
+      university,
+      college,
+      sortBy,
+      sortDirection
+    ).then((res) => {
+      setPosts([...posts, ...res.data.content]);
+      setLast(res.data.last);
+      setPage(page + 1);
+    });
   };
 
   const onCategoryRadioPress = (value) => {
@@ -204,8 +226,8 @@ const Search = ({ navigation }) => {
           />
         </View>
       </CustomModal>
-      <ScrollView>
-        <SafeAreaView className="text-center bg-raisin-500 h-full flex justify-center">
+      <SafeAreaView className="text-center bg-raisin-500 h-full flex justify-center">
+        <ScrollView>
           <View className="mx-5 mt-5">
             <CustomTextInput
               placeholder="Pretraži.. "
@@ -232,7 +254,7 @@ const Search = ({ navigation }) => {
               </CustomText>
             </View>
           </View>
-          <View className="flex align-center justify-center mx-4">
+          <View className="flex align-center justify-center mx-4 mb-10">
             {posts &&
               posts.length > 0 &&
               posts.map((value, key) => (
@@ -247,8 +269,20 @@ const Search = ({ navigation }) => {
               </CustomText>
             )}
           </View>
-        </SafeAreaView>
-      </ScrollView>
+          {!last && (
+            <View className="mb-32 flex flex-row justify-center align-center -mt-5">
+              <CustomButton
+                title="Učitaj još"
+                onPress={() => {
+                  fetchData();
+                }}
+                classes="bg-slate-50 w-60"
+                textClasses="text-crimson-500"
+              />
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };

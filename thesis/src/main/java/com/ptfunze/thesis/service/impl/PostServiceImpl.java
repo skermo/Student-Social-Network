@@ -16,14 +16,13 @@ import com.ptfunze.thesis.request.CommentRequest;
 import com.ptfunze.thesis.service.PostService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -49,11 +48,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostDto> getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
+        User user = getAuthUser();
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        return postRepository.findAll(pageable)
+        return postRepository.getAllPosts(user.getCollege().getId().toString(), pageable)
                 .map(this::mapToDto);
     }
 
@@ -115,9 +115,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<PostDto> searchPosts(String name, String category, String university, String college,
                                      int pageNo, int pageSize, String sortBy, String sortDir) {
+        User user = getAuthUser();
         Sort sort = !sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Post> posts = postRepository.searchItems(name, category, university, college, pageable);
+        Page<Post> posts = postRepository.searchPosts(name, category, university, college, user.getCollege().getId().toString(), pageable);
         return posts.map(this::mapToDto);
     }
 
