@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -34,4 +36,16 @@ public class RegisterRequest {
     @Size(min = 8, message = "Password must contain at least 8 characters")
     @Size(max = 255, message = "Password cannot contain more than 255 characters")
     private String password;
+
+    @NotBlank(message = "University cannot be empty")
+    @Size(max = 255, message = "University cannot contain more than 255 characters")
+    private UUID universityId;
+
+    @NotBlank(message = "College cannot be empty")
+    @Size(max = 255, message = "University cannot contain more than 255 characters")
+    private UUID collegeId;
+
+    @NotBlank(message = "Image url cannot be empty")
+    @Size(max = 255, message = "University cannot contain more than 255 characters")
+    private String imageUrl;
 }

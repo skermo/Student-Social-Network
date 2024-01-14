@@ -1,12 +1,13 @@
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
-import { Image, Modal, ScrollView, TouchableOpacity, View } from "react-native";
+import { Image, Modal, ScrollView, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { crimson, lightGrey, raisin } from "../../assets/styles/variables";
+import useAuth from "../hooks/useAuth";
 import { getCollegeById } from "../services/CollegeService";
-import { commentPost, likePost } from "../services/PostService";
+import { commentPost, getPostById, likePost } from "../services/PostService";
 import { getUserById } from "../services/UserService";
 import {
   formatCollegeName,
@@ -18,14 +19,20 @@ import {
 import CustomText from "./CustomText";
 import CustomTextInput from "./CustomTextInput";
 
-const GridItem = ({ post, navigation }) => {
+const GridItem = ({ post }) => {
+  const { auth } = useAuth();
+
   const [user, setUser] = useState("");
   const [college, setCollege] = useState("");
   const [readMore, setReadMore] = useState(false);
   const [liked, setLiked] = useState(false);
   const [openComments, setOpenComments] = useState(false);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(post.comments);
   const [text, setText] = useState("");
+  const [numberOfLikes, setNumberOfLikes] = useState(post.numberOfLikes);
+  const [numberOfComments, setNumberOfComments] = useState(
+    post.numberOfComments
+  );
 
   const [isScrolling, setScrolling] = useState(false);
   const scrollViewRef = useRef(null);
@@ -48,24 +55,33 @@ const GridItem = ({ post, navigation }) => {
 
   useEffect(() => {
     if (userLikedPost(post.likes)) setLiked(true);
-    setComments(post.comments);
 
     getUserById(post.userId).then((res) => setUser(res));
     getCollegeById(post.collegeId).then((res) => setCollege(res));
   }, [post]);
 
   const like = () => {
+    if (liked) {
+      setNumberOfLikes(numberOfLikes - 1);
+    } else {
+      setNumberOfLikes(numberOfLikes + 1);
+    }
     setLiked(!liked);
     likePost({ postId: post.id });
   };
 
-  const comment = () => {
-    commentPost({ postId: post.id, text: text });
+  const comment = async () => {
+    await commentPost({ postId: post.id, text: text }).then(() => {
+      getPostById(post.id).then((res) => {
+        setComments(res.data.comments);
+        setNumberOfComments(numberOfComments + 1);
+      });
+    });
     setText("");
   };
 
   const userLikedPost = (likes) => {
-    return likes.find((like) => like.userId == user.id);
+    return likes.find((like) => like.userId == auth.user.id);
   };
 
   return (
@@ -93,7 +109,7 @@ const GridItem = ({ post, navigation }) => {
                     Komentari
                   </CustomText>
                   <View className="border-b-light border-slate-50" />
-                  {post.comments && post.comments.length > 0 ? (
+                  {post.comments && numberOfComments > 0 ? (
                     <ScrollView
                       className="w-full"
                       ref={scrollViewRef}
@@ -101,7 +117,10 @@ const GridItem = ({ post, navigation }) => {
                     >
                       {comments &&
                         comments.map((comment, key) => (
-                          <View className="bg-slate-50 rounded-2xl m-3 p-3" key={comment.id}>
+                          <View
+                            className="bg-slate-50 rounded-2xl m-3 p-3"
+                            key={comment.id}
+                          >
                             <View className="border-b-light border-raisin-500">
                               <View className="flex flex-row align-center justify-between">
                                 <CustomText fontFamily="black">
@@ -161,7 +180,7 @@ const GridItem = ({ post, navigation }) => {
                     onSubmitEditing={() => comment()}
                     value={text}
                     onChangeText={setText}
-                    classes="border border-slate-50 w-screen mt-8 mb-8"
+                    classes="border border-slate-50 w-screen mt-8 mb-8 text-slate-50"
                     placeholder="Dodaj komentar..."
                   ></CustomTextInput>
                 </View>
@@ -178,95 +197,85 @@ const GridItem = ({ post, navigation }) => {
               className="h-10 w-10 rounded-full mr-2 mt-2"
             />
             <View className="bg-slate-50 border rounded-2xl border-slate-50 w-10/12 h-fit px-5 py-1">
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Post", { post: post });
-                }}
-              >
-                <View className="border-b-light border-raisin-500">
-                  <View className="flex flex-row align-center justify-between">
-                    <CustomText fontFamily="black">
-                      {formatFullName(user)}
-                    </CustomText>
-                    <View className="flex flex-row items-center">
-                      <Entypo name="back-in-time" size={12} color={lightGrey} />
-                      <CustomText fontFamily="light" classes="text-xs ml-1">
-                        {formatTimePassed(post.createdOn)} ago
-                      </CustomText>
-                    </View>
-                  </View>
+              <View className="border-b-light border-raisin-500">
+                <View className="flex flex-row align-center justify-between">
+                  <CustomText fontFamily="black">
+                    {formatFullName(user)}
+                  </CustomText>
                   <View className="flex flex-row items-center">
-                    <Entypo name="location-pin" size={12} color={crimson} />
-                    <CustomText classes="text-xs">
-                      {formatCollegeName(college)}
+                    <Entypo name="back-in-time" size={12} color={lightGrey} />
+                    <CustomText fontFamily="light" classes="text-xs ml-1">
+                      {formatTimePassed(post.createdOn)} ago
                     </CustomText>
                   </View>
                 </View>
-                <CustomText fontFamily="bold" classes="text-sm pt-2 pb-0.5">
-                  {post.title}
-                </CustomText>
-                {post.description.length < 250 || readMore ? (
-                  readMore ? (
-                    <CustomText classes="text-sm">
-                      {post.description}
-                      <CustomText
-                        classes="text-sm"
-                        fontFamily="light"
-                        onPress={() => setReadMore(!readMore)}
-                      >
-                        {" "}
-                        Hide
-                      </CustomText>
-                    </CustomText>
-                  ) : (
-                    <CustomText classes="text-sm">
-                      {post.description}
-                    </CustomText>
-                  )
-                ) : (
+                <View className="flex flex-row items-center">
+                  <Entypo name="location-pin" size={12} color={crimson} />
+                  <CustomText classes="text-xs">
+                    {formatCollegeName(college)}
+                  </CustomText>
+                </View>
+              </View>
+              <CustomText fontFamily="bold" classes="text-sm pt-2 pb-0.5">
+                {post.title}
+              </CustomText>
+              {post.description.length < 250 || readMore ? (
+                readMore ? (
                   <CustomText classes="text-sm">
-                    {truncateText(post.description, 250)}
+                    {post.description}
                     <CustomText
                       classes="text-sm"
                       fontFamily="light"
                       onPress={() => setReadMore(!readMore)}
-                      hitSlop={{ x: 35, y: 45 }}
                     >
                       {" "}
-                      Read more
+                      Sakrij
                     </CustomText>
                   </CustomText>
-                )}
-                <View className="border-t-light border-raisin-500 flex flex-row items-center">
-                  {liked ? (
-                    <Ionicons
-                      name="heart-sharp"
-                      size={24}
-                      color={crimson}
-                      onPress={() => like()}
-                    />
-                  ) : (
-                    <Ionicons
-                      name="heart-outline"
-                      size={24}
-                      color={raisin}
-                      onPress={() => like()}
-                    />
-                  )}
-                  <CustomText classes="text-xs mx-1">
-                    {post.likes.length}
+                ) : (
+                  <CustomText classes="text-sm">{post.description}</CustomText>
+                )
+              ) : (
+                <CustomText classes="text-sm">
+                  {truncateText(post.description, 250)}
+                  <CustomText
+                    classes="text-sm"
+                    fontFamily="light"
+                    onPress={() => setReadMore(!readMore)}
+                    hitSlop={{ x: 35, y: 45 }}
+                  >
+                    {" "}
+                    Učitaj još
                   </CustomText>
-                  <FontAwesome
-                    name="comments-o"
+                </CustomText>
+              )}
+              <View className="border-t-light border-raisin-500 flex flex-row items-center">
+                {liked ? (
+                  <Ionicons
+                    name="heart-sharp"
+                    size={24}
+                    color={crimson}
+                    onPress={() => like()}
+                  />
+                ) : (
+                  <Ionicons
+                    name="heart-outline"
                     size={24}
                     color={raisin}
-                    onPress={() => setOpenComments(!openComments)}
+                    onPress={() => like()}
                   />
-                  <CustomText classes="text-xs ml-1">
-                    {post.comments.length}
-                  </CustomText>
-                </View>
-              </TouchableOpacity>
+                )}
+                <CustomText classes="text-xs mx-1">{numberOfLikes}</CustomText>
+                <FontAwesome
+                  name="comments-o"
+                  size={24}
+                  color={raisin}
+                  onPress={() => setOpenComments(!openComments)}
+                />
+                <CustomText classes="text-xs ml-1">
+                  {numberOfComments}
+                </CustomText>
+              </View>
             </View>
           </View>
         </>

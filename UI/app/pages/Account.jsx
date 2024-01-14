@@ -98,7 +98,7 @@ const Account = () => {
             />
           </View>
         </View>
-        <View className="flex flex-row justify-center">
+        <View className="flex flex-row justify-center mb-12">
           <View className="w-3/4 mb-5 flex flex-row justify-center">
             <CustomText classes="uppercase text-slate-50 mt-2">
               {auth.user.college.fullName}

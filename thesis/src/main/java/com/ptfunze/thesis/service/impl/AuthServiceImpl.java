@@ -6,7 +6,9 @@ import com.ptfunze.thesis.entity.User;
 import com.ptfunze.thesis.exception.ConflictException;
 import com.ptfunze.thesis.exception.NotFoundException;
 import com.ptfunze.thesis.jwt.JwtUtils;
+import com.ptfunze.thesis.repository.CollegeRepository;
 import com.ptfunze.thesis.repository.RoleRepository;
+import com.ptfunze.thesis.repository.UniversityRepository;
 import com.ptfunze.thesis.repository.UserRepository;
 import com.ptfunze.thesis.request.LoginRequest;
 import com.ptfunze.thesis.request.RegisterRequest;
@@ -33,18 +35,22 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CollegeRepository collegeRepository;
+    private final UniversityRepository universityRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils tokenProvider;
 
     public AuthServiceImpl(ModelMapper mapper, AuthenticationManager authenticationManager,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder,
+                           CollegeRepository collegeRepository, UniversityRepository universityRepository, PasswordEncoder passwordEncoder,
                            JwtUtils tokenProvider) {
         this.mapper = mapper;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.collegeRepository = collegeRepository;
+        this.universityRepository = universityRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
     }
@@ -79,6 +85,9 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder
                         .encode(registerRequest.getPassword()))
                 .roles(roles)
+                .college(collegeRepository.getReferenceById(registerRequest.getCollegeId()))
+                .university(universityRepository.getReferenceById(registerRequest.getUniversityId()))
+                .imageUrl(registerRequest.getImageUrl())
                 .build();
         userRepository.save(user);
         Authentication authentication = authenticationManager

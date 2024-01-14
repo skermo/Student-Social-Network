@@ -45,7 +45,7 @@ public class Post {
     private ZonedDateTime updatedOn;
 
     @Column(name = "is_private")
-    private boolean isPrivate = false;
+    private boolean isPrivate;
 
     @Column(name = "number_of_likes")
     private int numberOfLikes = 0;

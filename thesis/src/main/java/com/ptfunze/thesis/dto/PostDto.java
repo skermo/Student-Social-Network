@@ -1,5 +1,6 @@
 package com.ptfunze.thesis.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class PostDto {
     private UUID userId;
     private UUID collegeId;
     private UUID universityId;
+    @JsonProperty
     private boolean isPrivate;
     private int numberOfLikes;
     private int numberOfComments;

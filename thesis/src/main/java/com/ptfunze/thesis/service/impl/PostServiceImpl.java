@@ -63,6 +63,8 @@ public class PostServiceImpl implements PostService {
         postDto.setCollegeId(user.getCollege().getId());
         postDto.setUniversityId(user.getUniversity().getId());
         postDto.setUserId(user.getId());
+        System.out.println("OVDJE");
+        System.out.println(postDto.isPrivate());
         Post post = postRepository.save(mapToEntity(postDto));
         return mapToDto(post);
     }

@@ -7,12 +7,22 @@ import GridItem from "../components/GridItem";
 import useAuth from "../hooks/useAuth";
 import { getPosts } from "../services/PostService";
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
   const { auth, loading } = useAuth();
 
   const [posts, setPosts] = useState([]);
   const [last, setLast] = useState(true);
   const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    if (route.params?.key == "reload") {
+      setPage(0);
+      getPosts(0).then((res) => {
+        setPosts(res.data.content);
+        setLast(res.data.last);
+      });
+    }
+  }, [route]);
 
   useEffect(() => {
     if (!loading) {

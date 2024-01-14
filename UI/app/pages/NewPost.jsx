@@ -41,9 +41,10 @@ const NewPost = ({ navigation }) => {
   }, []);
 
   const handleSubmit = async (post) => {
+    console.log(post)
     try {
       await addNewPost(post);
-      navigation.navigate("Home");
+      navigation.navigate("Home", { key: "reload" });
     } catch (error) {
       if (!error?.response) {
         setError("Nema odgovora servera");
@@ -77,7 +78,7 @@ const NewPost = ({ navigation }) => {
           isValid,
           setFieldValue,
         }) => (
-          <View className="border rounded-2xl my-2 p-6 border-light border-zinc-50 bg-zinc-50">
+          <View className="border rounded-2xl my-2 p-6 border-light border-zinc-50 bg-zinc-50 w-5/6">
             <CustomText classes="text-center text-crimson-500 uppercase">
               Naslov
             </CustomText>
@@ -172,7 +173,9 @@ const NewPost = ({ navigation }) => {
                 value={values.isPrivate}
               />
             </View>
-            <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">{error}</CustomText>
+            <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">
+              {error}
+            </CustomText>
             <CustomButton
               onPress={handleSubmit}
               title="Postavi"
