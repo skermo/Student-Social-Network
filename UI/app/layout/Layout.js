@@ -15,7 +15,7 @@ const Layout = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          headerShadowVisible: false,
+          headerShadowVisible: false
         }}
       >
         {auth?.user ? (
@@ -32,6 +32,7 @@ const Layout = () => {
             headerStyle: { backgroundColor: raisin },
             headerTitleStyle: { color: "white" },
             headerTintColor: crimson,
+            headerBackTitleVisible: false
           }}
         ></Stack.Screen>
       </Stack.Navigator>

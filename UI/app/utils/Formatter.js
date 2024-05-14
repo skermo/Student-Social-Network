@@ -16,14 +16,14 @@ export const formatTimePassed = (date) => {
   const minutes = timeInMinutes - timeInHours * 60;
 
   if (timeInWeeks > 0) {
-    return `${timeInWeeks} weeks`;
+    return `${timeInWeeks} sedmica`;
   } else if (days > 0) {
-    return `${days} days`;
+    return `${days} dana`;
   } else {
     if (hours > 0) {
-      return `${hours} hours`;
+      return `${hours} sati`;
     } else {
-      return `${minutes} minutes`;
+      return `${minutes} minuta`;
     }
   }
 };

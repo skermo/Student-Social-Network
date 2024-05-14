@@ -64,7 +64,7 @@ const Account = () => {
             </View>
             <CustomButton
               onPress={logoutUser}
-              title="Logout"
+              title="Odjava"
               classes="border-light border-slate-50 bg-slate-50 mt-5"
               textClasses="text-raisin-500"
             />

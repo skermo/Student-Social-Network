@@ -8,9 +8,9 @@ export const loginValidationSchema = yup.object().shape({
     .required("Unesite email"),
   password: yup
     .string()
-    .min(8, "Password mora sadržavati bar 8 karaktera")
-    .max(255, "Password mora biti kraći od 255 karaktera")
-    .required("Unesite password"),
+    .min(8, "Šifra mora sadržavati bar 8 karaktera")
+    .max(255, "Šifra mora biti kraći od 255 karaktera")
+    .required("Unesite šifru"),
 });
 
 export const newPostValidationSchema = yup.object().shape({

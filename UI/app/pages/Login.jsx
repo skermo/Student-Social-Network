@@ -25,7 +25,7 @@ const Login = () => {
       if (!error?.response) {
         setError("Nema odgovora servera");
       } else if (error.response?.status === 404) {
-        setError("Pogreašan email ili password");
+        setError("Pogreašan email ili šifra");
       } else {
         setError("Neuspješan login");
       }
@@ -62,7 +62,7 @@ const Login = () => {
               Universities United
             </CustomText>
             <View className="w-10/12 border px-4 py-8 rounded-2xl bg-raisin-600 border-raisin-600 shadow-2xl">
-              <CustomText classes="text-slate-50 font-black">Email</CustomText>
+              <CustomText classes="text-slate-50 font-black">Korisnički Email</CustomText>
               <CustomTextInput
                 placeholder="johndoe@mail.com"
                 keyboardType="email-address"
@@ -78,7 +78,7 @@ const Login = () => {
                   {errors.email}
                 </CustomText>
               )}
-              <CustomText classes="text-slate-50">Password</CustomText>
+              <CustomText classes="text-slate-50 font-black">Korisnička šifra</CustomText>
               <CustomTextInput
                 placeholder="********"
                 secureTextEntry
@@ -97,7 +97,7 @@ const Login = () => {
              <CustomText classes="text-barn-500 text-sm -mt-2 mb-2">{error}</CustomText>
               <CustomButton
                 onPress={handleSubmit}
-                title="Login"
+                title="Prijava"
                 disabled={!isValid}
                 classes={classNames("border-light border-raisin-500 bg-raisin-500 disabled:opacity-75", {"opacity-70": !isValid} )}
                 textClasses="text-slate-50"

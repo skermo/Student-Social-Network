@@ -3,6 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { NativeWindStyleSheet } from "nativewind";
 import { useCallback } from "react";
 import { View } from "react-native";
+import 'react-native-reanimated';
 import { AuthProvider } from "./app/context/AuthProvider";
 import Layout from "./app/layout/Layout";
 

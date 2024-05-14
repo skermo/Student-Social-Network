@@ -107,7 +107,7 @@ const Search = ({ navigation }) => {
   return (
     <View className="bg-raisin-500 h-full">
       <CustomModal
-        title="Filter"
+        title="Filtriranje"
         openModal={openFilter}
         setOpenModal={setOpenFilter}
       >
@@ -243,14 +243,14 @@ const Search = ({ navigation }) => {
                 fontFamily="light"
                 onPress={() => setOpenFilter(true)}
               >
-                Filter
+                Filtriranje
               </CustomText>
               <CustomText
                 classes="text-slate-50 text-right underline"
                 fontFamily="light"
                 onPress={() => setOpenSort(true)}
               >
-                Sort
+                Sortiranje
               </CustomText>
             </View>
           </View>

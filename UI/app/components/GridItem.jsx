@@ -205,7 +205,7 @@ const GridItem = ({ post }) => {
                   <View className="flex flex-row items-center">
                     <Entypo name="back-in-time" size={12} color={lightGrey} />
                     <CustomText fontFamily="light" classes="text-xs ml-1">
-                      {formatTimePassed(post.createdOn)} ago
+                      prije {formatTimePassed(post.createdOn)}
                     </CustomText>
                   </View>
                 </View>
