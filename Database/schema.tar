@@ -1,0 +1,365 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.0 (Debian 16.0-1.pgdg120+1)
+-- Dumped by pg_dump version 16.0 (Debian 16.0-1.pgdg120+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.categories (
+    id uuid NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.categories OWNER TO postgres;
+
+--
+-- Name: colleges; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.colleges (
+    id uuid NOT NULL,
+    abbreviation character varying(10) NOT NULL,
+    city character varying(255),
+    full_name character varying(255) NOT NULL,
+    image_url character varying(255) NOT NULL,
+    country character varying(255),
+    university_id uuid
+);
+
+
+ALTER TABLE public.colleges OWNER TO postgres;
+
+--
+-- Name: comments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.comments (
+    id uuid NOT NULL,
+    created_on timestamp(6) with time zone,
+    text character varying(255),
+    updated_on timestamp(6) with time zone,
+    post_id uuid,
+    user_id uuid
+);
+
+
+ALTER TABLE public.comments OWNER TO postgres;
+
+--
+-- Name: likes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.likes (
+    id uuid NOT NULL,
+    created_on timestamp(6) with time zone,
+    post_id uuid,
+    user_id uuid
+);
+
+
+ALTER TABLE public.likes OWNER TO postgres;
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.posts (
+    id uuid NOT NULL,
+    created_on timestamp(6) with time zone,
+    description character varying(1000) NOT NULL,
+    title character varying(255) NOT NULL,
+    updated_on timestamp(6) with time zone,
+    category_id uuid,
+    user_id uuid,
+    is_private boolean,
+    college_id uuid,
+    university_id uuid,
+    number_of_comments integer,
+    number_of_likes integer
+);
+
+
+ALTER TABLE public.posts OWNER TO postgres;
+
+--
+-- Name: role; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.role (
+    id uuid NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.role OWNER TO postgres;
+
+--
+-- Name: universities; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.universities (
+    id uuid NOT NULL,
+    abbreviation character varying(10) NOT NULL,
+    city character varying(255),
+    country character varying(255),
+    full_name character varying(255) NOT NULL,
+    image_url character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.universities OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id uuid NOT NULL,
+    email character varying(255) NOT NULL,
+    first_name character varying(255) NOT NULL,
+    last_name character varying(255) NOT NULL,
+    password character varying(255) NOT NULL,
+    college_id uuid,
+    university_id uuid,
+    image_url character varying(255)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_role; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users_role (
+    users_id uuid NOT NULL,
+    role_id uuid NOT NULL
+);
+
+
+ALTER TABLE public.users_role OWNER TO postgres;
+
+--
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: colleges colleges_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.colleges
+    ADD CONSTRAINT colleges_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comments comments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT comments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: likes likes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.likes
+    ADD CONSTRAINT likes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.role
+    ADD CONSTRAINT role_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users uk_6dotkott2kjsp8vw4d0m25fb7; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT uk_6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email);
+
+
+--
+-- Name: role uk_7d8a768x6aiuvmsa24hqiharg; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.role
+    ADD CONSTRAINT uk_7d8a768x6aiuvmsa24hqiharg UNIQUE (name);
+
+
+--
+-- Name: categories uk_t8o6pivur7nn124jehx7cygw5; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT uk_t8o6pivur7nn124jehx7cygw5 UNIQUE (name);
+
+
+--
+-- Name: universities universities_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.universities
+    ADD CONSTRAINT universities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_role users_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users_role
+    ADD CONSTRAINT users_role_pkey PRIMARY KEY (users_id, role_id);
+
+
+--
+-- Name: colleges fk2gk29qela48vy5xafi4jgq9kg; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.colleges
+    ADD CONSTRAINT fk2gk29qela48vy5xafi4jgq9kg FOREIGN KEY (university_id) REFERENCES public.universities(id);
+
+
+--
+-- Name: posts fk5lidm6cqbc7u4xhqpxm898qme; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT fk5lidm6cqbc7u4xhqpxm898qme FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: posts fk84581upy6umr4od008i9kfl1s; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT fk84581upy6umr4od008i9kfl1s FOREIGN KEY (college_id) REFERENCES public.colleges(id);
+
+
+--
+-- Name: comments fk8omq0tc18jd43bu5tjh6jvraq; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT fk8omq0tc18jd43bu5tjh6jvraq FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: posts fk9fvp10u24irpm6hsamb2svion; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT fk9fvp10u24irpm6hsamb2svion FOREIGN KEY (university_id) REFERENCES public.universities(id);
+
+
+--
+-- Name: users_role fkchgambv8ob2ibb69sph779ha5; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users_role
+    ADD CONSTRAINT fkchgambv8ob2ibb69sph779ha5 FOREIGN KEY (role_id) REFERENCES public.role(id);
+
+
+--
+-- Name: comments fkh4c7lvsc298whoyd4w9ta25cr; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT fkh4c7lvsc298whoyd4w9ta25cr FOREIGN KEY (post_id) REFERENCES public.posts(id);
+
+
+--
+-- Name: posts fkijnwr3brs8vaosl80jg9rp7uc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT fkijnwr3brs8vaosl80jg9rp7uc FOREIGN KEY (category_id) REFERENCES public.categories(id);
+
+
+--
+-- Name: users_role fkiu0xsee0dmwa28nffgyf4bcvc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users_role
+    ADD CONSTRAINT fkiu0xsee0dmwa28nffgyf4bcvc FOREIGN KEY (users_id) REFERENCES public.users(id);
+
+
+--
+-- Name: users fkm6cuniuttvvmhstb2s32jsotf; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fkm6cuniuttvvmhstb2s32jsotf FOREIGN KEY (university_id) REFERENCES public.universities(id);
+
+
+--
+-- Name: likes fknvx9seeqqyy71bij291pwiwrg; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.likes
+    ADD CONSTRAINT fknvx9seeqqyy71bij291pwiwrg FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: users fkq8c77pl7fllv195wbwqn13375; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fkq8c77pl7fllv195wbwqn13375 FOREIGN KEY (college_id) REFERENCES public.colleges(id);
+
+
+--
+-- Name: likes fkry8tnr4x2vwemv2bb0h5hyl0x; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.likes
+    ADD CONSTRAINT fkry8tnr4x2vwemv2bb0h5hyl0x FOREIGN KEY (post_id) REFERENCES public.posts(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
